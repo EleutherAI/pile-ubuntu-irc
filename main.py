@@ -90,13 +90,13 @@ for date, chan, content in pool.imap(get_logs_for, documents()):
     if len(exclude_system(content)) > 0:
         content = clean(exclude_select_system(content))
         #print(date, chan)
-        logs[chan] += f'#{chan} {date.year}-{date.month:02d}-{date.day:02d}\n'
-        logs[chan] += content
+        logs[(chan, date.month)] += f'#{chan} {date.year}-{date.month:02d}-{date.day:02d}\n'
+        logs[(chan, date.month)] += content
         #if chan == 'ubuntu': print(content)
 
 ar = lmd.Archive('out')
 
-for chan, content in logs.items():
-    ar.add_data(content, meta={'channel': chan})
+for (chan, month), content in logs.items():
+    ar.add_data(content, meta={'channel': chan, 'month': month})
 
 ar.commit()
